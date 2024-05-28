@@ -6,3 +6,4 @@
 ```
 AVD Pixel 7 API 34
 ```
+[코틀린 플레이 그라운드](https://developer.android.com/training/kotlinplayground?hl=ko)
