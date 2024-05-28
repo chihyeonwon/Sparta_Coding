@@ -28,3 +28,12 @@ for (number in uniqueNumbers) {
     println(number)
 }
 ```
+
+Collection : 데이터의 그룹을 저장하고 관리하는 자료 구조 (List, Set, Map)   
+map : 컬렉션의 각 요소에 대해 지정된 변환을 수행하고, 결과를 새로운 리스트로 반환     
+
+```kotlin
+val numbers = listOf(1, 2, 3, 4, 5)
+val squaredNumbers = numbers.map { it * it }
+println(squaredNumbers) // [1, 4, 9, 16, 25]
+​```
