@@ -81,3 +81,32 @@ data class Book(val title: String, val author: String)
 val book = Book("Kotlin for Android", "John Doe")
 println(book) // Book(title=Kotlin for Android, author=John Doe)
 ```
+☑️ 상속
+하나의 클래스가 다른 클래스의 속성과 메서드를 확장하거나 재정의
+```kotlin
+open class Mom(val name: String) {
+    fun momCard() {
+        println("$name buy car")
+    }
+}
+
+class Son(name: String, val age: String) : Mom(name) {
+    fun myCard() {
+        println("$name buy book")
+    }
+}
+
+val me = Son("Isup", "18")
+me.momCard() // "Sedan buy car"
+me.myCard() // "Sedan buy book"
+​```
+자식 클래스와 부모 클래스 사이에 : 연산자를 사용하여 상속을 표시
+```
+class MainActivity : Activity()
+​```
+부모 클래스에서 함수를 참조하려면 다음 예와 같이 super 키워드를 사용    
+```
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+}
+```
