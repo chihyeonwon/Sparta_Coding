@@ -56,3 +56,9 @@ fun greet(name: String): String {
 val message = greet("Android Developer")
 println(message) // "Hello, Android Developer!"
 ```
+람다 함수 : 이름 없이 사용되는 함수로, 간단한 연산이나 콜 백에 유용
+```kotlin
+button.setOnClickListener { 
+    println("Button clicked!") 
+}
+```
