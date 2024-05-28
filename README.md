@@ -112,3 +112,11 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 }
 ```
+## 1주차 새로이 알게된 것
+```
+constraint 레이아웃에서 width는 0을 자주 쓴다.
+constraint 레이아웃을 자주 쓰는 추세, bias 비율을 써서 비율 정할 수 있음
+텍스트는 sp, 이미지는 dp를 자주 씀
+constraintVertical_bias Attribute
+constraintHorizontal_bias = "0.2" // 0 ~ 1 사이의 값으로 조율
+```
