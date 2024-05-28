@@ -62,3 +62,22 @@ button.setOnClickListener {
     println("Button clicked!") 
 }
 ```
+클래스   
+객체 지향 프로그래밍의 핵심 요소로, 데이터와 그 데이터를 처리하는 메서드를 하나로 묶은 것    
+class 키워드로 정의되며, 프로퍼티와 메서드 함수를 가짐     
+```kotlin
+class User(val name: String, val age: Int) {
+    fun greet() {
+        println("Hello, my name is $name.")
+    }
+}
+val user = User("Sparta", 25)
+user.greet() // "Hello, my name is Sparta."
+```​
+데이터 클래스 : data 키워드를 사용하여 data에 초점을 맞춘 클래스를 만들 수 있음
+```kotlin
+data class Book(val title: String, val author: String)
+
+val book = Book("Kotlin for Android", "John Doe")
+println(book) // Book(title=Kotlin for Android, author=John Doe)
+```
