@@ -43,3 +43,16 @@ val numbers = listOf(1, 2, 3, 4, 5)
 val evenNumbers = numbers.filter { it % 2 == 0 }
 println(evenNumbers) // [2, 4]
 ```
+☑️ 함수  
+특정 작업을 수행하는 코드 블록    
+동일한 코드를 반복하는 대신 함수에 반복되는 코드를 함수로 묶어 호출할 수 있음    
+함수의 선언 : fun 키워드 뒤에 함수 이름이 오도록 사용    
+입력 파라미터와 반환 타입(Return)을 가질 수 있음       
+```
+fun greet(name: String): String {
+    return "Hello, $name!"
+}
+
+val message = greet("Android Developer")
+println(message) // "Hello, Android Developer!"
+```
