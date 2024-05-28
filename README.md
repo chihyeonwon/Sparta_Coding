@@ -7,3 +7,23 @@
 AVD Pixel 7 API 34
 ```
 [코틀린 플레이 그라운드](https://developer.android.com/training/kotlinplayground?hl=ko)
+- **데이터 형 (Data Types)**
+    - **정의**: 여러 데이터를 구조화하는 데 사용되는 자료형
+    - **종류**:
+        - **`List`**: 목록 형태의 컬렉션을 제공
+        - **`Map`**: 키와 값의 쌍으로 데이터를 저장
+        - **`Set`**: 중복 없는 유일한 요소들의 모음
+```kotlin
+val todoList: List<String> = listOf("Study Kotlin", "Develop App", "Test Features")
+for (todo in todoList) {
+    println(todo)
+}
+
+val userProfiles: Map<String, String> = mapOf("username" to "Sparta", "email" to "sparta@example.com")
+println("Email of the user: ${userProfiles["email"]}")
+
+val uniqueNumbers: Set<Int> = setOf(1, 2, 3, 4, 3, 2)
+for (number in uniqueNumbers) {
+    println(number)
+}
+```
