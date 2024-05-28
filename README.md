@@ -101,11 +101,13 @@ me.momCard() // "Sedan buy car"
 me.myCard() // "Sedan buy book"
 ​```
 자식 클래스와 부모 클래스 사이에 : 연산자를 사용하여 상속을 표시
-```
+
 class MainActivity : Activity()
-​```
-부모 클래스에서 함수를 참조하려면 다음 예와 같이 super 키워드를 사용    
 ```
+
+```
+부모 클래스에서 함수를 참조하려면 다음 예와 같이 super 키워드를 사용    
+
 override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 }
