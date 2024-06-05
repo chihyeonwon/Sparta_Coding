@@ -258,7 +258,88 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
+- **Fragment에 Paging 효과 적용하기**
+    - Fragment Paging을 위해 **ViewPager2**와 **FragmentStateAdapter**를 활용하여 구현
+    - 인기 있는 Fragment 관리 기법 중 하나
+    - ☑️ **ViewPager2와 FragmentStateAdapter 사용 가이드**
 
+
+1. ViewPager2 레이아웃 XML 파일에 추가   
+```kotlin
+<!-- activity_main.xml -->
+<androidx.viewpager2.widget.ViewPager2
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewPager"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+```
+2. FragmentStateAdapter 사용
+    1. **`FragmentStateAdapter`**를 상속받는 어댑터를 생성하여 ViewPager2에 연결
+```kotlin
+class WeatherFragmentStateAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+    override fun getItemCount() = 2 //추가 하고 싶은 Fragment 갯수
+
+    override fun createFragment(position: Int): Fragment {
+        return when (position) {
+            0 -> FirstFragment() // 각 Position 별 Fragment 연결
+            else -> SecondFragment()
+        }
+    }
+}
+```
+3. ViewPager2에 adapter 연결
+```kotlin
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        with(binding) {
+            setContentView(root)
+            // viewPager에 FragmentStateAdapter를 상속해서 만든 Adapter 연결
+            viewPager.adapter = WeatherFragmentStateAdapter(this@MainActivity)
+        }
+    }
+}
+```
+4. [선택] @paging시 Indicator 달기
+```kotlin
+// build.gradle
+dependencies {
+    implementation("me.relex:circleindicator:2.1.6")
+```
+```kotlin
+<!-- activity_main.xml -->
+<me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/indicator"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="23dp"
+        app:ci_drawable="@drawable/indicator_black_circle"
+        app:ci_drawable_unselected="@drawable/indicator_gray_circle"
+        app:ci_height="8dp"
+        app:ci_margin="10dp"
+        app:ci_width="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/view_pager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+```
+```kotlin
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        with(binding) {
+            setContentView(root)
+            val adapter = WeatherFragmentStateAdapter(this@MainActivity)
+            viewPager.adapter = adapter
+            indicator.setViewPager(viewPager)
+            adapter.registerAdapterDataObserver(indicator.adapterDataObserver)
+        }
+```
 
 
 
