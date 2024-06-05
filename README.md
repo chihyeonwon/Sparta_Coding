@@ -340,6 +340,132 @@ class MainActivity : AppCompatActivity() {
             adapter.registerAdapterDataObserver(indicator.adapterDataObserver)
         }
 ```
+03. Data 연동 : RecyclerView 활용하기
+
+![image](https://github.com/chihyeonwon/Sparta_Coding_1/assets/58906858/36b97b23-9a05-4253-946b-df9867e54fb8)
+
+- 리스트 형태의 Data를 표시하는 데 사용되는 위젯 중 가장 **신제품**
+- 많은 아이템을 효율적으로 관리하고 보여주는 역할
+- 리스트를 스크롤 할 때, 위에 있던 아이템은 **재활용** 돼서 아래로 이동하여 **재사용** 함.
+
+- ☑️ **RecyclerView 준비물**
+    - **LayoutManager**
+        - **`LayoutManager`**는 **`RecyclerView`** 내부의 아이템들이 어떻게 배치될지를 결정
+        - 기본 제공되는 **`LayoutManager`**로는 **`LinearLayoutManager`**, **`GridLayoutManager`**, **`StaggeredGridLayoutManager`** 등
+
+![image](https://github.com/chihyeonwon/Sparta_Coding_1/assets/58906858/a3e4bd3d-47de-45da-a7c5-fb1406c21802)
+```kotlin
+recyclerView.layoutManager = LinearLayoutManager(this) // 수직 리스트를 위한 LinearLayoutManager
+// 또는
+recyclerView.layoutManager = GridLayoutManager(this, 2) // 2열 그리드를 위한 GridLayoutManager
+```
+
+- **RecyclerView.Adapter**
+    - **`RecyclerView`**에 표시될 데이터와 해당 데이터를 보여줄 **`ViewHolder`**를 연결
+    - **`Adapter`**는 데이터 셋의 변경 사항을 **`RecyclerView`**에 알리고, 데이터를 기반으로 뷰를 생성
+    - 각 리스트 Item 내부 layout도 만들어 주세요. **item_layout.xml**
+ 
+```kotlin
+class WeatherItemListAdapter :
+    ListAdapter<WeatherData, WeatherItemListAdapter.ItemViewHolder>(object :
+        DiffUtil.ItemCallback<WeatherData>() {
+        override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
+            return oldItem.time == newItem.time
+        }
+
+        override fun areContentsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
+            return oldItem == newItem
+        }
+    }) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemLayoutBinding.inflate(inflater, parent, false)
+        return ItemViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+}
+```
+- **ViewHolder**
+    - **`RecyclerView`**의 **개별 아이템 뷰**를 위한 객체입니다.
+    - 아이템 뷰의 모든 서브 뷰를 담고 있어 재사용과 성능 최적화에 도움을 줍니다.
+
+```kotlin
+inner class ItemViewHolder(binding: ItemLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val timeView = binding.timeTv
+        private val temperatureView = binding.tempTv
+        private val weatherStatusView = binding.weatherIv
+        private val rainStatusView = binding.rainIv
+        fun bind(item: WeatherData?) {
+            val res = timeView.context.resources
+            timeView.text = item?.time?.toTimeFormat()
+            temperatureView.text = res.getString(R.string.temp_text, item?.temperature)
+            weatherStatusView.setImageResource(item?.skyStatus?.icon ?: R.drawable.ic_sunny)
+            rainStatusView.setImageResource(item?.rainState?.icon ?: R.drawable.ic_sunny)
+        }
+
+        private fun String.toTimeFormat(): String {
+            return if (this.length == 4) "${this.substring(0, 2)}:${this.substring(2)}" else this
+        }
+    }
+```
+
+## **04. 다양한 UI 요구 사항의 처리**
+✔️  다양한 UI 요구 사항을 구현해야 할 경우 어떤 방법들이 있을지 알아보아요.
+
+- 다양한 날씨 상태 별로 날씨 상태 문구와 이미지를 어떻게 표현할 수 있을까요?
+    - **Enum class**란?
+        - 열거형을 나타내는 특별한 클래스 유형
+        - Kotlin에서는 **`enum class`** 키워드를 사용하여 정의
+        - 고정된 상수들의 집합
+    - Enum class의 활용
+        - **`SkyStatus`**는 하늘 상태를 나타내며, **`value`**, **`text`**, **`icon`**, **`colorIcon`** 네 개의 속성을 가짐
+        - 상태는 **`GOOD`**, **`CLOUDY`**, **`BAD`**로 구분
+        - 날씨의 상태 값이 왔을 때 UI 요구 사항 별로 날씨 문구나, 흑백 아이콘, 컬러 아이콘 들을 자유롭게 활용 가능
+
+```kotlin
+enum class SkyStatus(val value: Int, val text: String, val icon: Int, val colorIcon: Int) {
+    GOOD(1, "맑음", R.drawable.ic_sunny, R.drawable.ic_color_sunny),
+    CLOUDY(3, "구름 많음", R.drawable.ic_sun_clouny, R.drawable.ic_color_sunny_cloudy),
+    BAD(4, "흐림", R.drawable.ic_cloudy_2, R.drawable.ic_color_cloudy)
+}
+
+mainWeatherText.text = data.skyStatus.text
+weatherStatusIv.setImageResource(data.skyStatus.colorIcon)
+```
+
+- **문자열 서식 지정**
+    - 문자열의 서식을 지정해야 할 경우, 문자열 리소스에 서식 인수를 추가하여 지정할 수 있음
+    - `%1$s`는 문자열이고 `%2$d`는 정수
+ 
+```kotlin
+<string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
+
+var text = getString(R.string.welcome_messages, username, mailCount)
+
+<string name="rain_percent">강수 확률 %1$s%%</string>
+
+mainRainPercentTv.text = getString(R.string.rain_percent, data.rainPercent)
+```
+
+- **HTML 마크업을 사용하여 스타일 지정**
+    - HTML 마크업을 사용하여 문자열에 스타일을 추가할 수 있음
+    - 지원되는 HTML 요소
+        - 굵게: <b>
+        - 기울임 꼴: <i>, <cite>, <dfn>, <em>
+        - 텍스트 25% 확대: <big>
+        - 텍스트 20% 축소: <small>
+
+```kotlin
+<string name="welcome_messages">Hello, %1$s! You have &lt;b>%2$d new messages&lt;/b>.</string>
+
+val text: String = getString(R.string.welcome_messages, username, mailCount)
+val styledText: Spanned = Html.fromHtml(text, FROM_HTML_MODE_LEGACY)
+```
 
 
 
