@@ -123,3 +123,142 @@ constraint 레이아웃을 자주 쓰는 추세, bias 비율을 써서 비율 �
 constraintVertical_bias Attribute
 constraintHorizontal_bias = "0.2" // 0 ~ 1 사이의 값으로 조율
 ```
+
+# 앱 개발의 숙련 과정: 고급 UI 및 기능 - 3주차
+
+**[수업 목표]**
+
+- Fragment의 기본 개념과 다양한 화면 구현을 위한 사용법을 이해할 수 있다.
+- ViewPager를 사용하여 Fragment 간의 페이징을 구현한다.
+- RecyclerView를 사용하여 효율적인 데이터 리스트 표시 방법을 알 수 있다.
+- 동적 문자열 처리, HTML 태그 활용 등을 통해 다양한 UI 요구사항을 구현할 수 있다.
+- Fragment와 RecyclerView를 활용하여 실제 날씨 앱을 구현할 수 있다.
+
+![image](https://github.com/chihyeonwon/Sparta_Coding_1/assets/58906858/df8830a9-c73f-4d29-a368-d118b34a9847)
+
+- 단어 의미
+    - ‘조각’, ‘부분’, 작은 조각이나 부분적인 요소를 나타내는 말,
+    - 전체에서 일부를 이루는 작은 부분
+    - 안드로이드에서도 동일한 의미로 사용됨.
+- 사용자 인터페이스(UI)의 일부를 나타내는 재 사용 가능한 클래스
+- **목적**
+    - 복잡한 UI의 모듈화를 통한 유연한 관리
+    - Activity 하나에 많은 기능을 넣으면 너무 거대해질 수 있어요. 이를 기능별 Fragment로 모듈화하여 유연하게 관리할 수 있어요
+- **비유**
+    - Activity : **액자 vs** Fragment : **그림들**
+- **필요한 이유**
+    - **재사용성** : 다양한 Activity에서 재사용 가능
+    - **모듈성** : 복잡한 UI를 여러 개의 작은 단위로 나누어 효율적으로 관리
+    - **유연한 사용자 인터페이스**: 하나의 Activity 내에서 여러 Fragment를 교체하거나 함께 표시함으로써 다양한 화면 크기와 방향에 맞는 유연한 사용자 인터페이스를 제공
+ 
+![image](https://github.com/chihyeonwon/Sparta_Coding_1/assets/58906858/5314d936-02b9-42a0-abcb-b76f4102ce50)
+
+- **독립적인 라이프 사이클**: Fragment는 자체 라이프 사이클을 가지고 있어서, Activity의 라이프 사이클과 독립적으로 관리. 앱의 안정성을 높여줌
+- **성능 향상**: Fragment는 필요할 때만 로드되고 제거될 수 있어, 메모리 사용과 앱의 전반적인 성능을 향상시킴
+- **라이프 사이클 :** Activity와는 다른 Fragment 자체적인 Lifecycle을 가지고 있음
+
+![image](https://github.com/chihyeonwon/Sparta_Coding_1/assets/58906858/6dfa14f6-1e56-492c-b5e7-c3ed5d4a3bc6)
+
+1. **Fragment의 생성**
+    1. **`Fragment`**를 상속받으며, **`onCreateView`** 메서드를 오버라이드하여 Fragment의 레이아웃을 연결함.
+  
+```kotlin
+class FirstFragment : Fragment() {
+    private var _binding: FragmentFirstBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.textviewFirst.text = "Sparta First Fragment"
+        binding.buttonFirst.setOnClickListener {
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+```
+
+2. **레이아웃 XML 파일 생성**
+    1. Fragment의 UI를 정의하는 XML 레이아웃 파일을 생성. **`res/layout`** 폴더에 위치함
+  
+```kotlin
+<!-- fragment_first.xml -->
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".FirstFragment">
+
+    <Button
+        android:id="@+id/button_first"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        app:layout_constraintBottom_toTopOf="@id/textview_first"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textview_first"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/lorem_ipsum"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_first" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+3. **Activity 레이아웃에 FragmentContainerView 추가**
+    1. **`FragmentContainerView`**는 Activity의 레이아웃 XML 파일에 추가
+    2. **`android:name`** 속성에는 Fragment의 전체 클래스 이름을 지정
+  
+```kotlin
+<!-- activity_main.xml -->
+<androidx.fragment.app.FragmentContainerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:name="com.yourpackage.FirstFragment" />
+```
+
+4. **Activity에서 동적으로 추가도 가능**
+    1. xml에서 **`android:name`**를 사용하지 않을 경우엔 코드에서 동적으로 추가 또는 교체
+  
+```kotlin
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Fragment를 동적으로 추가하는 코드
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, FirstFragment())
+                .commit()
+        }
+    }
+}
+```
+
+
+
+
