@@ -1,5 +1,5 @@
 # Sparta_Coding_1
-[국비교육] 스파르타코딩클럽 안드로이드 앱 개발자 과정 1회차 학습 정리
+[국비교육] 스파르타코딩클럽 안드로이드 앱 개발자 과정 1회차 학습 정리l
 ## 튜터
 ![image](https://github.com/chihyeonwon/Sparta_Coding_1/assets/58906858/c8e96a92-09cd-4262-9ac8-64b777cd6546)
 
